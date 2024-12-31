@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Milk Order Page</title>
+    <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+</head>
+<body>
+    <script>
+         var milkPrice = new Map();
+         milkPrice.set("FCM1000",60.0);
+         milkPrice.set("SM500",44.0);
+         milkPrice.set("TM500",40.0);
+         milkPrice.set("SM200",50);
+
+         //alert('milk price of FCM100 is '.concat( milkPrice.get("FCM1000")) );
+
+        function calculatePrice(qty,milkType){
+            console.log('Total'+qty);
+            var qtyFloat =parseFloat(qty);
+            var elementId="txt".concat(milkType).concat("Amount");
+            var price= document.getElementById(elementId);
+            var strPrice ="" +(qtyFloat * milkPrice.get(milkType));
+
+            if(strPrice !='NaN'){
+                price.value = strPrice;
+                doTotal();
+            }else
+            {
+                price.value = 0.0;
+            }
+
+        }
+
+         function getPrice(qty,milkType){
+
+            var qtyFloat =parseFloat(qty);
+            var elementId="txt".concat(milkType).concat("Amount");
+            var price= document.getElementById(elementId);
+            var strPrice ="" +(qtyFloat * milkPrice.get(milkType));
+
+            if(strPrice !='NaN'){
+                price.value = strPrice;
+
+            }else
+            {
+                price.value = 0.0;
+            }
+
+        }
+
+        function checkDecimal(inputtxt)
+        {
+                var decimal=  /^[-+]?[0-9]+\.[0-9]+$/;
+                if(inputtxt.match(decimal))
+                {
+                    alert('Correct, try another...')
+                    return true;
+                }
+                else
+                {
+                    alert('Wrong...!')
+                    return false;
+                }
+        }
+
+
+        function validateAndCalculate(qtyId,amtId,priceKey){
+
+               try {
+                    var qty  = document.getElementById(qtyId);
+                    if(! checkDecimal(qty.value)){
+                          alert("Invalid liter entered for ".concat(priceKey));
+                          qty.focus();
+                          return false;
+                     }
+
+
+                    var amt  = document.getElementById(amtId);
+                    var price= document.getElementById(elementId);
+
+                    price.value = parseFloat(qty.value) * milkPrice.get(priceKey);
+
+                    doTotal();
+                }catch(e)
+                {
+                    alert('Please enter valid ')
+                    return false ;
+                }
+        }
+
+        function ClearAll(){
+                    document.getElementById("txtFCM1000QtyinLtr").value = "";
+                    document.getElementById("txtFCM1000Amount").value="";
+
+                    document.getElementById("txtSM500QtyinLtr").value = "";
+                    document.getElementById("txtSM500Amount").value = "";
+
+                    document.getElementById("txtSM200inLtr").value  = "";
+                    document.getElementById("txtSM200Amount").value = "";
+
+                    document.getElementById("txtTotalQtyinLtr").value= "";
+                    document.getElementById("txtTotalAmount").value= "";
+
+                    document.getElementById("txtTM500QtyinLtr").value= "";
+                    document.getElementById("txtTM500Amount").value= "";
+        }
+
+        function updateAmount(moneyValue, moneyQty, target){
+            var moneyValue =parseFloat(moneyValue);
+            var price= document.getElementById(target);
+            var totColTotal ="" +(moneyValue * moneyQty );
+            if(totColTotal !='NaN'){
+                price.innerHTML  = totColTotal ;
+                doMoneyTotal();
+            }
+        }
+        function doMoneyTotal(){
+
+            var txt500Total = document.getElementById("txt500Total").innerHTML;
+            var txt200Total = document.getElementById("txt200Total").innerHTML;
+            var txt100Total = document.getElementById("txt100Total").innerHTML;
+            var txt50Total  = document.getElementById("txt50Total").innerHTML;
+            var txt20Total  = document.getElementById("txt20Total").innerHTML;
+            var txt10Total  = document.getElementById("txt10Total").innerHTML;
+            var txtCoinsTotal  = document.getElementById("txtCoinsTotal").value;
+
+            var total500 =0.0;
+            var total200 =0.0;
+            var total100 =0.0;
+            var total50  =0.0;
+            var total20  =0.0;
+            var total10  =0.0;
+            var coinsTotal=0.0;
+
+            if(txt500Total.trim() != "")  total500  = parseFloat(txt500Total.trim());
+            if(txt200Total.trim() != "")  total200  = parseFloat(txt200Total.trim());
+            if(txt100Total.trim() != "")  total100  = parseFloat(txt100Total.trim());
+            if(txt50Total.trim() != "")  total50   = parseFloat(txt50Total.trim());
+            if(txt20Total.trim() != "")  total20   = parseFloat(txt20Total.trim());
+            if(txt10Total.trim() != "")  total10   = parseFloat(txt10Total.trim());
+            if(txtCoinsTotal.trim() != "")  coinsTotal =parseFloat(txtCoinsTotal.trim());
+
+            var moneyTotal =total500 + total200 + total100 + total50  + total20 + total10 +coinsTotal ;
+
+            document.getElementById("txtTotalMoney").value =moneyTotal ;
+
+
+            return true;
+
+        }
+        function doAllPriceTotal(){
+            getPrice(document.getElementById("txtFCM1000QtyinLtr").value,'FCM1000');
+            getPrice(document.getElementById("txtSM500QtyinLtr").value,'SM500');
+            getPrice(document.getElementById("txtSM200inLtr").value,'SM200');
+            getPrice(document.getElementById("txtTM500QtyinLtr").value,'TM500');
+            
+        }
+        function doTotal(){
+                doAllPriceTotal();
+                var txtSM500QtyinLtr    =0.0;
+                var txtSM500Amount      =0.0;
+                var txtFCM1000QtyinLtr  =0.0;
+                var txtFCM1000Amount    =0.0;
+                var txtSM200inLtr       =0.0;
+                var txtSM200Amount      =0.0;
+
+                var txtTM500inLtr       =0.0;
+                var txtTM500Amount      =0.0;
+
+                var txtTotalQtyinLtr    =0.0;
+                var txtTotalAmount      =0.0;
+
+                    if(document.getElementById("txtFCM1000QtyinLtr").value.trim() === "") {
+                        document.getElementById("txtFCM1000Amount").value ="0";
+                        txtFCM1000QtyinLtr=0;
+                       }else{
+                             txtFCM1000QtyinLtr    = parseFloat(document.getElementById("txtFCM1000QtyinLtr").value);
+                             txtFCM1000Amount    = parseFloat(document.getElementById("txtFCM1000Amount").value);
+                         }
+                     if(document.getElementById("txtSM500QtyinLtr").value.trim() === "") {
+                            document.getElementById("txtSM500Amount").value ="0";
+                            txtSM500QtyinLtr=0;
+                        }else {
+                             txtSM500QtyinLtr    = parseFloat(document.getElementById("txtSM500QtyinLtr").value);
+                            txtSM500Amount    = parseFloat(document.getElementById("txtSM500Amount").value);
+                        }
+
+
+                      if(document.getElementById("txtTM500QtyinLtr").value.trim() === "") {
+                        txtSTM500inLtr =0;
+                        document.getElementById("txtTM500Amount").value ="0";
+                       }else{
+                            txtTM500inLtr    = parseFloat(document.getElementById("txtTM500QtyinLtr").value);
+                            txtTM500Amount    = parseFloat(document.getElementById("txtTM500Amount").value);
+                       }
+
+                       if(document.getElementById("txtSM200inLtr").value.trim() === "") {
+                        txtSM200inLtr =0;
+                        document.getElementById("txtSM200Amount").value ="0";
+                       }else{
+                            txtSM200inLtr    = parseFloat(document.getElementById("txtSM200inLtr").value);
+                            txtSM200Amount    = parseFloat(document.getElementById("txtSM200Amount").value);
+                       }
+
+
+
+                 txtTotalQtyinLtr    = txtSM500QtyinLtr + txtFCM1000QtyinLtr + txtSM200inLtr+txtTM500inLtr;
+                 txtTotalAmount      = txtSM500Amount + txtFCM1000Amount + txtSM200Amount + txtTM500Amount;
+
+                document.getElementById("txtTotalQtyinLtr").value=txtTotalQtyinLtr;
+                document.getElementById("txtTotalAmount").value=txtTotalAmount;
+
+        }
+
+    </script>
+    <div class="container-fluid"  >
+      
+        <div class="row font-weight-bold">
+            <div class="col">
+                <label for="txtBoothNo" >Booth No  </label>
+                <input  type="text" class="form-control" id="txtBoothNo" value="2189" size="4" />
+            </div>
+            <div class="col">
+                <label for="txtAgentName">Agent Name</label>
+                <input  type="text" class="form-control" id="txtAgentName" value="R Rajendran" size="10"  />
+            </div>
+        </div>
+        <div class="row font-weight-bold">
+            <div class="col ">
+                <label for="txtBoothNo"  >Payment Date </label>
+                <input c type="text" class="form-control font-weight-bold" id="txtPaymentDate" size="8"/>
+             </div>
+            <div class="col">
+                <label for="txtBoothNo" > Milk Delivery Date </label>
+                <input  type="text"  class="form-control font-weight-bold" id="txtMilkRequiredDate" size="8"/>
+            </div>
+        </div>
+
+        <div class="row"> &nbsp;<br/> <div class="col"><hr/> &nbsp;</div></div>
+        <div class="row"> &nbsp;<br/> <div class="col"><hr/> &nbsp;</div></div>
+        <div class="row input-group-text font-weight-bold">
+                <div class="col" ><center>Detail</center></div>
+                <div class="col"><center>Qty in Ltr</center></div>
+
+                <div class="col"><center>Amount</center></div>
+        </div>
+        <div class="row"> &nbsp;<br/> <div class="col"><hr/> &nbsp;</div></div>
+        <div class="row">
+
+            <div class="col input-group-text font-weight-bold">
+                <label for="txtFCM1000QtyinLtr"> <bold>FCM 1000</bold></label>
+            </div>
+            <div class="col">
+                <input id="txtFCM1000QtyinLtr"  type="number" class="form-control font-weight-bold"
+                       onblur="calculatePrice(this.value,'FCM1000')"/>
+            </div>
+            <div class="col "><input id="txtFCM1000Amount"  value="0" class="form-control-plaintext font-weight-bold" readonly />
+                <small id="txtFCM1000AmountHlp" class="form-text text-muted font-weight-bold">Per Ltr : 60.00</small>
+            </div>
+
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+        <div class="row">
+            <div class="col input-group-text font-weight-bold"><bold>SM 500</bold></div>
+            <div class="col"><input id="txtSM500QtyinLtr" type="number" class="form-control font-weight-bold"  onblur="calculatePrice(this.value,'SM500')" /></div>
+            <div class="col "><input id="txtSM500Amount"   value="0" class="form-control-plaintext font-weight-bold" readonly/>
+                <small id="txtSM500AmountHlp" class="form-text text-muted font-weight-bold" >Per Ltr : 44.00</small>
+            </div>
+
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+        <div class="row">
+            <div class="col input-group-text font-weight-bold"><bold>TM 500</bold></div>
+            <div class="col"><input id="txtTM500QtyinLtr" type="number" class="form-control font-weight-bold"  onblur="calculatePrice(this.value,'TM500')" /></div>
+            <div class="col "><input id="txtTM500Amount"   value="0" class="form-control-plaintext font-weight-bold" readonly/>
+                <small id="txtTM500AmountHlp" class="form-text text-muted font-weight-bold" >Per Ltr : 40.00</small>
+            </div>
+
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+       <!-- <tr>
+            <td scope="row">TM 500 ML</td>
+            <td><input id="txtTM500inLtr" onblur="calculatePrice(this.value,'TM500')" value="0" disabled/></td>
+             <td ><center>43.00</center></td>
+            <td><input id="txtTM500Amount" value="0.0
+" disabled/></td>
+        </tr> -->
+        <div class="row">
+            <div class="col input-group-text font-weight-bold"><bold>SM 200</bold></div>
+            <div class="col"><input id="txtSM200inLtr" type="number" class="form-control font-weight-bold"  onblur="calculatePrice(this.value,'SM200')"/></div>
+            <div class="col "><input id="txtSM200Amount" value="0" class="form-control-plaintext font-weight-bold" readonly/>
+            <small id="txtSM200AmountHlp" class="form-text text-muted font-weight-bold">Per Ltr : 50.00</small></div>
+        </div>
+
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+
+        <div class="row">
+
+            <div class="col input-group-text">
+                <small id="txtSM2200AmountHlp" class="form-text text-muted font-weight-bold">Total Liter</small>
+                <input id="txtTotalQtyinLtr" class="form-control-plaintext font-weight-bold" style="text-align:right" readonly/>
+            </div>
+            <div class="col input-group-text">
+
+                <input id="txtTotalAmount"  class="form-control-plaintext font-weight-bold"  readonly/>
+                <small id="txtSM22200AmountHlp" class="form-text text-muted font-weight-bold">Total Amount</small>
+            </div>
+
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+
+        <div class="row">  <div class="col"> <center>
+            <input type="button" class="btn btn-success" value="Clear All" onclick="ClearAll()">
+            <input type="button" class="btn btn-success" value="Calculate Price" onclick="doTotal() ; doAllPriceTotal();">
+        </center></div></div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+
+
+        <div class="row input-group-text font-weight-bold">  <div class="col">Amount Denomination &nbsp;</div></div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+        <div class="row">
+            <div class="col font-weight-bold text-right">500 X </right> </div>
+            <div class="col font-weight-bold  d-flex flex-row ">
+                <input id="txt500num" type="number" class="form-control font-weight-bold text-right" onblur="updateAmount(this.value,500,'txt500Total')" />  </div>
+            <div class="col font-weight-bold  text-right" id="txt500Total">0.0</div>
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+        <div class="row">
+            <div class="col font-weight-bold text-right">200 X </right> </div>
+            <div class="col font-weight-bold d-flex flex-row">
+             <input id="txt200num" type="number" class="form-control font-weight-bold text-right" onblur="updateAmount(this.value,200,'txt200Total')"/>  </div>
+            <div class="col font-weight-bold  text-right" id="txt200Total">0.0</div>
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+        <div class="row">
+            <div class="col font-weight-bold text-right">100 X </right> </div>
+            <div class="col font-weight-bold d-flex flex-row" >
+                <input id="txt100num"  type="number" class="form-control font-weight-bold text-right" onblur="updateAmount(this.value,100,'txt100Total')" />  </div>
+
+            <div class="col font-weight-bold  text-right" id="txt100Total">0.0</div>
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+        <div class="row">
+            <div class="col font-weight-bold text-right">50 X </right> </div>
+            <div class="col font-weight-bold d-flex flex-row">
+                <input id="txt50num"  type="number" class="form-control font-weight-bold text-right" onblur="updateAmount(this.value,50,'txt50Total')"/>  </div>
+            <div class="col font-weight-bold  text-right" id="txt50Total">0.0</div>
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+        <div class="row">
+            <div class="col font-weight-bold text-right">20 X </right> </div>
+            <div class="col font-weight-bold d-flex  flex-row">
+                <input id="txt20num"  type="number" class="form-control font-weight-bold text-right"  onblur="updateAmount(this.value,20,'txt20Total')"/>   </div>
+
+            <div class="col font-weight-bold  text-right" id="txt20Total">0.0</div>
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+        <div class="row">
+            <div class="col font-weight-bold text-right">10 X </right> </div>
+            <div class="col font-weight-bold d-flex  flex-row align-middle ">
+                <input id="txt10num"  type="number" class="form-control font-weight-bold text-right" onblur="updateAmount(this.value,10,'txt10Total')"/>  </div>
+                <div class="col font-weight-bold text-right" id="txt10Total"> 0.0</div>
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+        <div class="row">
+            <div class="col font-weight-bold text-right">COINS  </right> </div>
+            <div class="col font-weight-bold text-right ">
+                <input id="txtCoinsTotal" type="number" value="0" onfocus="this.value='';"
+                       onblur="updateAmount(this.value,1,'txtCoinTotal')"
+                       class="form-control font-weight-bold text-right"  /> </div>
+            <div class="col font-weight-bold text-right" id="txtCoinTotal"> &nbsp;</div>
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+
+        <div class="row">
+            <div class="col font-weight-bold ">&nbsp; </right> </div>
+            <div class="col font-weight-bold text-right"> Total Amount  </div>
+            <div class="col font-weight-bold text-right"> <input id="txtTotalMoney"  class="form-control-plaintext font-weight-bold text-right"  /> </div>
+        </div>
+        <div class="row">  <div class="col"> &nbsp;</div></div>
+         <div class="row font-weight-bold">
+            <div class="col ">
+               <center>PREPAYMENT - AGENT COPY <BR/>
+                VELLORE - THIRUVANNAMALAI DISTRICT MILK CO-OPERATIVE SOCIATY <BR/>
+                VELLORE-9</center>
+            </div>
+        </div>
+    </div>
+    <script>
+        var today = new Date();
+        var tomorrow = new Date();
+        tomorrow.setDate(new Date().getDate()+1);
+
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = dd + '/' + mm + '/' + yyyy;
+
+         var tomorrowDD = String(tomorrow.getDate()).padStart(2, '0');
+         var tomorrowMonth = String(tomorrow.getMonth() + 1).padStart(2, '0'); //January is 0!
+         var tomorrowYear = tomorrow.getFullYear();
+            strTomorrow = tomorrowDD + '/' + tomorrowMonth + '/' + tomorrowYear;
+        document.getElementById("txtPaymentDate").value = today;
+        document.getElementById("txtMilkRequiredDate").value = strTomorrow;
+
+        //document.write(today);
+
+    </script>
+</body>
+</html>
