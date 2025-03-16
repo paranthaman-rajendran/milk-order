@@ -8,19 +8,19 @@
             href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 </head>
 <body>
     <script>
+         // Define milk prices lookup table
          var milkPrice = new Map();
-         milkPrice.set("FCM1000",60.0);
-         milkPrice.set("SM500",44.0);
-         milkPrice.set("TM500",40.0);
-         milkPrice.set("SM200",50);
-         milkPrice.set("Delite500", 44.0);
-         milkPrice.set("Delite200", 50.0);
+         milkPrice.set("FCM1000", 60.0);  // Full Cream Milk 1000ml
+         milkPrice.set("SM500", 44.0);    // Standard Milk 500ml
+         milkPrice.set("TM500", 40.0);    // Toned Milk 500ml
+         milkPrice.set("SM200", 50.0);    // Standard Milk 200ml
+         milkPrice.set("Delite500", 44.0); // Delite Milk 500ml
+         milkPrice.set("Delite200", 50.0); // Delite Milk 200ml
 
          //alert('milk price of FCM100 is '.concat( milkPrice.get("FCM1000")) );
 
@@ -98,37 +98,33 @@
                 }
         }
 
-        function ClearAll(){
-                    document.getElementById("txtFCM1000QtyinLtr").value = "";
-                    document.getElementById("txtFCM1000Amount").value="";
+        /**
+         * Clears all input fields and resets totals
+         */
+        function ClearAll() {
+            // Clear milk quantity and amount fields
+            const fieldsToReset = [
+                "txtFCM1000QtyinLtr", "txtFCM1000Amount",
+                "txtSM500QtyinLtr", "txtSM500Amount",
+                "txtSM200inLtr", "txtSM200Amount",
+                "txtTM500QtyinLtr", "txtTM500Amount",
+                "txtDelite500Morning", "txtDelite500Evening", "txtDelite500Total", "txtDelite500Amount",
+                "txtDelite200Morning", "txtDelite200Evening", "txtDelite200Total", "txtDelite200Amount"
+            ];
 
-                    document.getElementById("txtSM500QtyinLtr").value = "";
-                    document.getElementById("txtSM500Amount").value = "";
+            // Reset each field
+            fieldsToReset.forEach(fieldId => {
+                const element = document.getElementById(fieldId);
+                if (element) {
+                    element.value = "";
+                }
+            });
 
-                    document.getElementById("txtSM200inLtr").value  = "";
-                    document.getElementById("txtSM200Amount").value = "";
-
-                    document.getElementById("txtTotalQtyinLtr").value= "";
-                    document.getElementById("txtTotalAmount").value= "";
-
-                    document.getElementById("txtTM500QtyinLtr").value= "";
-                    document.getElementById("txtTM500Amount").value= "";
-
-                    document.getElementById("txtDelite500Morning").value = "";
-                    document.getElementById("txtDelite500Evening").value = "";
-                    document.getElementById("txtDelite500Total").value = "";
-                    document.getElementById("txtDelite500Amount").value = "0";
-                    
-                    document.getElementById("txtDelite200Morning").value = "";
-                    document.getElementById("txtDelite200Evening").value = "";
-                    document.getElementById("txtDelite200Total").value = "";
-                    document.getElementById("txtDelite200Amount").value = "0";
-
-                    // Clear total labels
-                    document.getElementById('txtTotalMorning').textContent = '0';
-                    document.getElementById('txtTotalEvening').textContent = '0';
-                    document.getElementById('txtGrandTotal').textContent = '0';
-                    document.getElementById('txtTotalAmount').textContent = '0.00';
+            // Reset total labels
+            document.getElementById('txtTotalMorning').textContent = '0';
+            document.getElementById('txtTotalEvening').textContent = '0';
+            document.getElementById('txtGrandTotal').textContent = '0';
+            document.getElementById('txtTotalAmount').textContent = '0.00';
         }
 
         function updateAmount(moneyValue, moneyQty, target){
@@ -238,43 +234,53 @@
 
         }
 
+        /**
+         * Calculates total quantity and amount for a specific milk type
+         * @param {string} milkType - Type of milk (e.g., 'Delite500', 'Delite200')
+         */
         function calculateTotalQty(milkType) {
+            // Get morning and evening quantities, default to 0 if empty
             const morning = parseFloat(document.getElementById(`txt${milkType}Morning`).value) || 0;
             const evening = parseFloat(document.getElementById(`txt${milkType}Evening`).value) || 0;
             const total = morning + evening;
             
-            // Update total quantity
+            // Update total quantity for this milk type
             document.getElementById(`txt${milkType}Total`).value = total;
             
-            // Calculate and update amount
+            // Calculate and update amount based on price
             const price = milkPrice.get(milkType);
             const amount = total * price;
             document.getElementById(`txt${milkType}Amount`).value = amount.toFixed(2);
 
-            // Calculate column totals
+            // Update column totals after calculation
             calculateColumnTotals();
         }
 
+        /**
+         * Calculates totals for all columns (Morning, Evening, Total, Amount)
+         */
         function calculateColumnTotals() {
             let totalMorning = 0;
             let totalEvening = 0;
             let grandTotal = 0;
             let totalAmount = 0;
 
-            // Sum up quantities for all milk types
+            // Calculate totals for all milk types
             ['Delite500', 'Delite200'].forEach(milkType => {
+                // Get values from form fields
                 const morning = parseFloat(document.getElementById(`txt${milkType}Morning`).value) || 0;
                 const evening = parseFloat(document.getElementById(`txt${milkType}Evening`).value) || 0;
                 const total = parseFloat(document.getElementById(`txt${milkType}Total`).value) || 0;
                 const amount = parseFloat(document.getElementById(`txt${milkType}Amount`).value) || 0;
 
+                // Add to running totals
                 totalMorning += morning;
                 totalEvening += evening;
                 grandTotal += total;
                 totalAmount += amount;
             });
 
-            // Update totals row with labels
+            // Update totals display in footer row
             document.getElementById('txtTotalMorning').textContent = totalMorning;
             document.getElementById('txtTotalEvening').textContent = totalEvening;
             document.getElementById('txtGrandTotal').textContent = grandTotal;
@@ -285,96 +291,102 @@
     <div class="container-fluid"  >
       
         <div class="row font-weight-bold">
-            <div class="col">
-                <label for="txtBoothNo" >Booth No  </label>
-                <input  type="text" class="form-control" id="txtBoothNo" value="2189" size="4" />
+            <div class="col-6 col-md-3">
+                <label for="txtBoothNo">Booth No</label>
+                <input type="text" class="form-control" id="txtBoothNo" value="2189" size="4" />
             </div>
-            <div class="col">
+            <div class="col-6 col-md-3">
                 <label for="txtAgentName">Agent Name</label>
-                <input  type="text" class="form-control" id="txtAgentName" value="R Rajendran" size="10"  />
+                <input type="text" class="form-control" id="txtAgentName" value="R Rajendran" size="10" />
             </div>
-        </div>
-        <div class="row font-weight-bold">
-            <div class="col ">
-                <label for="txtBoothNo"  >Payment Date </label>
-                <input c type="text" class="form-control font-weight-bold" id="txtPaymentDate" size="8"/>
-             </div>
-            <div class="col">
-                <label for="txtBoothNo" > Milk Delivery Date </label>
-                <input  type="text"  class="form-control font-weight-bold" id="txtMilkRequiredDate" size="8"/>
+            <div class="col-6 col-md-3">
+                <label for="txtPaymentDate">Payment Date</label>
+                <input type="text" class="form-control font-weight-bold" id="txtPaymentDate" size="8" />
+            </div>
+            <div class="col-6 col-md-3">
+                <label for="txtMilkRequiredDate">Milk Delivery Date</label>
+                <input type="text" class="form-control font-weight-bold" id="txtMilkRequiredDate" size="8" />
             </div>
         </div>
 
-        <div class="row"> &nbsp;<br/> <div class="col"><hr/> &nbsp;</div></div>
-        <div class="row"> &nbsp;<br/> <div class="col"><hr/> &nbsp;</div></div>
-        <div class="row input-group-text font-weight-bold">
-                <div class="col"><center>Type</center></div>
-                <div class="col"><center>Mo</center></div>
-                <div class="col"><center>Ev</center></div>
-                <div class="col"><center>ToM</center></div>
-                <div class="col"><center>Amt</center></div>
+        <div class="row mt-3">
+            <div class="col"><hr/></div>
         </div>
-        <div class="row"> &nbsp;<br/> <div class="col"><hr/> &nbsp;</div></div>
+
+        <div class="row input-group-text font-weight-bold text-center">
+            <div class="col-2">Type</div>
+            <div class="col-2">Mo</div>
+            <div class="col-2">Ev</div>
+            <div class="col-3">ToM</div>
+            <div class="col-3">Amt</div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col"><hr/></div>
+        </div>
+
         <div class="row input-group-text font-weight-bold">
-    <div class="col input-group-text font-weight-bold">
+    <div class="col-2 input-group-text font-weight-bold">
         <label><strong>DL500</strong></label>
     </div>
-    <div class="col">
+    <div class="col-2">
         <input id="txtDelite500Morning" type="number" class="form-control font-weight-bold" 
                onblur="calculateTotalQty('Delite500')" />
     </div>
-    <div class="col">
+    <div class="col-2">
         <input id="txtDelite500Evening" type="number" class="form-control font-weight-bold" 
                onblur="calculateTotalQty('Delite500')" />
     </div>
-    <div class="col">
+    <div class="col-3">
         <input id="txtDelite500Total" type="number" class="form-control font-weight-bold" readonly />
     </div>
-    <div class="col">
+    <div class="col-3">
         <input id="txtDelite500Amount" type="text" value="0" class="form-control-plaintext font-weight-bold" readonly />
     </div>
 </div>
 
 <div class="row input-group-text font-weight-bold">
-    <div class="col input-group-text font-weight-bold">
+    <div class="col-2 input-group-text font-weight-bold">
         <label><strong>DL200</strong></label>
     </div>
-    <div class="col">
+    <div class="col-2">
         <input id="txtDelite200Morning" type="number" class="form-control font-weight-bold" 
                onblur="calculateTotalQty('Delite200')" />
     </div>
-    <div class="col">
+    <div class="col-2">
         <input id="txtDelite200Evening" type="number" class="form-control font-weight-bold" 
                onblur="calculateTotalQty('Delite200')" />
     </div>
-    <div class="col">
+    <div class="col-3">
         <input id="txtDelite200Total" type="number" class="form-control font-weight-bold" readonly />
     </div>
-    <div class="col">
+    <div class="col-3">
         <input id="txtDelite200Amount" type="text" value="0" class="form-control-plaintext font-weight-bold" readonly />
     </div>
 </div>
 
 <!-- Replace the total row with this updated version -->
 <div class="row input-group-text font-weight-bold">
-    <div class="col input-group-text font-weight-bold">
+    <div class="col-2 input-group-text font-weight-bold">
         <label><strong>Total</strong></label>
     </div>
-    <div class="col input-group-text">
+    <div class="col-2 input-group-text">
         <label id="txtTotalMorning" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
     </div>
-    <div class="col input-group-text">
+    <div class="col-2 input-group-text">
         <label id="txtTotalEvening" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
     </div>
-    <div class="col input-group-text">
+    <div class="col-3 input-group-text">
         <label id="txtGrandTotal" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
     </div>
-    <div class="col input-group-text">
+    <div class="col-3 input-group-text">
         <label id="txtTotalAmount" class="form-control-plaintext font-weight-bold text-center mb-0">0.00</label>
     </div>
 </div>
 
-        <div class="row"> &nbsp;<br/> <div class="col"><hr/> &nbsp;</div></div>
+        <div class="row mt-3">
+            <div class="col"><hr/></div>
+        </div>
 
 
         <div class="row">  <div class="col"> <center>
