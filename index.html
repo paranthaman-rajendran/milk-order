@@ -9,7 +9,12 @@
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
+    <style>
+        /* Set minimum width for input fields to accommodate at least three characters */
+        .min-width-3ch {
+            min-width: 3ch;
+        }
+    </style>
 </head>
 <body>
     <script>
@@ -330,18 +335,18 @@
         <label><strong>DL500</strong></label>
     </div>
     <div class="col-2">
-        <input id="txtDelite500Morning" type="number" class="form-control font-weight-bold" 
+        <input id="txtDelite500Morning" type="number" class="form-control font-weight-bold min-width-3ch" 
                onblur="calculateTotalQty('Delite500')" />
     </div>
     <div class="col-2">
-        <input id="txtDelite500Evening" type="number" class="form-control font-weight-bold" 
+        <input id="txtDelite500Evening" type="number" class="form-control font-weight-bold min-width-3ch" 
                onblur="calculateTotalQty('Delite500')" />
     </div>
     <div class="col-3">
-        <input id="txtDelite500Total" type="number" class="form-control font-weight-bold" readonly />
+        <input id="txtDelite500Total" type="number" class="form-control font-weight-bold min-width-3ch" readonly />
     </div>
     <div class="col-3">
-        <input id="txtDelite500Amount" type="text" value="0" class="form-control-plaintext font-weight-bold" readonly />
+        <input id="txtDelite500Amount" type="text" value="0" class="form-control-plaintext font-weight-bold min-width-3ch" readonly />
     </div>
 </div>
 
@@ -350,18 +355,18 @@
         <label><strong>DL200</strong></label>
     </div>
     <div class="col-2">
-        <input id="txtDelite200Morning" type="number" class="form-control font-weight-bold" 
+        <input id="txtDelite200Morning" type="number" class="form-control font-weight-bold min-width-3ch" 
                onblur="calculateTotalQty('Delite200')" />
     </div>
     <div class="col-2">
-        <input id="txtDelite200Evening" type="number" class="form-control font-weight-bold" 
+        <input id="txtDelite200Evening" type="number" class="form-control font-weight-bold min-width-3ch" 
                onblur="calculateTotalQty('Delite200')" />
     </div>
     <div class="col-3">
-        <input id="txtDelite200Total" type="number" class="form-control font-weight-bold" readonly />
+        <input id="txtDelite200Total" type="number" class="form-control font-weight-bold min-width-3ch" readonly />
     </div>
     <div class="col-3">
-        <input id="txtDelite200Amount" type="text" value="0" class="form-control-plaintext font-weight-bold" readonly />
+        <input id="txtDelite200Amount" type="text" value="0" class="form-control-plaintext font-weight-bold min-width-3ch" readonly />
     </div>
 </div>
 
@@ -402,21 +407,21 @@
         <div class="row">
             <div class="col font-weight-bold text-right">500 X </right> </div>
             <div class="col font-weight-bold  d-flex flex-row ">
-                <input id="txt500num" type="number" class="form-control font-weight-bold text-right" onblur="updateAmount(this.value,500,'txt500Total')" />  </div>
+                <input id="txt500num" type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,500,'txt500Total')" />  </div>
             <div class="col font-weight-bold  text-right" id="txt500Total">0.0</div>
         </div>
         <div class="row">  <div class="col"> &nbsp;</div></div>
         <div class="row">
             <div class="col font-weight-bold text-right">200 X </right> </div>
             <div class="col font-weight-bold d-flex flex-row">
-             <input id="txt200num" type="number" class="form-control font-weight-bold text-right" onblur="updateAmount(this.value,200,'txt200Total')"/>  </div>
+             <input id="txt200num" type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,200,'txt200Total')"/>  </div>
             <div class="col font-weight-bold  text-right" id="txt200Total">0.0</div>
         </div>
         <div class="row">  <div class="col"> &nbsp;</div></div>
-        <div class="row">
+        <div the="row">
             <div class="col font-weight-bold text-right">100 X </right> </div>
             <div class="col font-weight-bold d-flex flex-row" >
-                <input id="txt100num"  type="number" class="form-control font-weight-bold text-right" onblur="updateAmount(this.value,100,'txt100Total')" />  </div>
+                <input id="txt100num"  type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,100,'txt100Total')" />  </div>
 
             <div class="col font-weight-bold  text-right" id="txt100Total">0.0</div>
         </div>
@@ -424,14 +429,14 @@
         <div class="row">
             <div class="col font-weight-bold text-right">50 X </right> </div>
             <div class="col font-weight-bold d-flex flex-row">
-                <input id="txt50num"  type="number" class="form-control font-weight-bold text-right" onblur="updateAmount(this.value,50,'txt50Total')"/>  </div>
+                <input id="txt50num"  type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,50,'txt50Total')"/>  </div>
             <div class="col font-weight-bold  text-right" id="txt50Total">0.0</div>
         </div>
         <div class="row">  <div class="col"> &nbsp;</div></div>
         <div class="row">
             <div class="col font-weight-bold text-right">20 X </right> </div>
             <div class="col font-weight-bold d-flex  flex-row">
-                <input id="txt20num"  type="number" class="form-control font-weight-bold text-right"  onblur="updateAmount(this.value,20,'txt20Total')"/>   </div>
+                <input id="txt20num"  type="number" class="form-control font-weight-bold text-right min-width-3ch"  onblur="updateAmount(this.value,20,'txt20Total')"/>   </div>
 
             <div class="col font-weight-bold  text-right" id="txt20Total">0.0</div>
         </div>
@@ -439,7 +444,7 @@
         <div class="row">
             <div class="col font-weight-bold text-right">10 X </right> </div>
             <div class="col font-weight-bold d-flex  flex-row align-middle ">
-                <input id="txt10num"  type="number" class="form-control font-weight-bold text-right" onblur="updateAmount(this.value,10,'txt10Total')"/>  </div>
+                <input id="txt10num"  type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,10,'txt10Total')"/>  </div>
                 <div class="col font-weight-bold text-right" id="txt10Total"> 0.0</div>
         </div>
         <div class="row">  <div class="col"> &nbsp;</div></div>
@@ -448,7 +453,7 @@
             <div class="col font-weight-bold text-right ">
                 <input id="txtCoinsTotal" type="number" value="0" onfocus="this.value='';"
                        onblur="updateAmount(this.value,1,'txtCoinTotal')"
-                       class="form-control font-weight-bold text-right"  /> </div>
+                       class="form-control font-weight-bold text-right min-width-3ch"  /> </div>
             <div class="col font-weight-bold text-right" id="txtCoinTotal"> &nbsp;</div>
         </div>
         <div class="row">  <div class="col"> &nbsp;</div></div>
