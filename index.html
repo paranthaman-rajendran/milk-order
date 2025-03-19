@@ -318,76 +318,72 @@
             <div class="col"><hr/></div>
         </div>
 
-        <div class="row input-group-text font-weight-bold text-center">
-            <div class="col-2">Type</div>
-            <div class="col-2">Mor</div>
-            <div class="col-2">Eve</div>
-            <div class="col-3">ToM</div>
-            <div class="col-3">Amt</div>
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Type</th>
+                        <th>Morning</th>
+                        <th>Evening</th>
+                        <th>Total</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>DL500</strong></td>
+                        <td>
+                            <input id="txtDelite500Morning" type="number" class="form-control font-weight-bold min-width-3ch" 
+                                   onblur="calculateTotalQty('Delite500')" />
+                        </td>
+                        <td>
+                            <input id="txtDelite500Evening" type="number" class="form-control font-weight-bold min-width-3ch" 
+                                   onblur="calculateTotalQty('Delite500')" />
+                        </td>
+                        <td>
+                            <input id="txtDelite500Total" type="number" class="form-control font-weight-bold min-width-3ch" readonly />
+                        </td>
+                        <td>
+                            <input id="txtDelite500Amount" type="text" value="0" class="form-control-plaintext font-weight-bold min-width-3ch" readonly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>DL200</strong></td>
+                        <td>
+                            <input id="txtDelite200Morning" type="number" class="form-control font-weight-bold min-width-3ch" 
+                                   onblur="calculateTotalQty('Delite200')" />
+                        </td>
+                        <td>
+                            <input id="txtDelite200Evening" type="number" class="form-control font-weight-bold min-width-3ch" 
+                                   onblur="calculateTotalQty('Delite200')" />
+                        </td>
+                        <td>
+                            <input id="txtDelite200Total" type="number" class="form-control font-weight-bold min-width-3ch" readonly />
+                        </td>
+                        <td>
+                            <input id="txtDelite200Amount" type="text" value="0" class="form-control-plaintext font-weight-bold min-width-3ch" readonly />
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>Total</strong></td>
+                        <td>
+                            <label id="txtTotalMorning" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
+                        </td>
+                        <td>
+                            <label id="txtTotalEvening" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
+                        </td>
+                        <td>
+                            <label id="txtGrandTotal" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
+                        </td>
+                        <td>
+                            <label id="txtTotalAmount" class="form-control-plaintext font-weight-bold text-center mb-0">0.00</label>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
-
-        <div class="row mt-3">
-            <div class="col"><hr/></div>
-        </div>
-
-        <div class="row input-group-text font-weight-bold">
-    <div class="col-2 input-group-text font-weight-bold">
-        <label><strong>DL500</strong></label>
-    </div>
-    <div class="col-2">
-        <input id="txtDelite500Morning" type="number" class="form-control font-weight-bold min-width-3ch" 
-               onblur="calculateTotalQty('Delite500')" />
-    </div>
-    <div class="col-2">
-        <input id="txtDelite500Evening" type="number" class="form-control font-weight-bold min-width-3ch" 
-               onblur="calculateTotalQty('Delite500')" />
-    </div>
-    <div class="col-3">
-        <input id="txtDelite500Total" type="number" class="form-control font-weight-bold min-width-3ch" readonly />
-    </div>
-    <div class="col-3">
-        <input id="txtDelite500Amount" type="text" value="0" class="form-control-plaintext font-weight-bold min-width-3ch" readonly />
-    </div>
-</div>
-
-<div class="row input-group-text font-weight-bold">
-    <div class="col-2 input-group-text font-weight-bold">
-        <label><strong>DL200</strong></label>
-    </div>
-    <div class="col-2">
-        <input id="txtDelite200Morning" type="number" class="form-control font-weight-bold min-width-3ch" 
-               onblur="calculateTotalQty('Delite200')" />
-    </div>
-    <div class="col-2">
-        <input id="txtDelite200Evening" type="number" class="form-control font-weight-bold min-width-3ch" 
-               onblur="calculateTotalQty('Delite200')" />
-    </div>
-    <div class="col-3">
-        <input id="txtDelite200Total" type="number" class="form-control font-weight-bold min-width-3ch" readonly />
-    </div>
-    <div class="col-3">
-        <input id="txtDelite200Amount" type="text" value="0" class="form-control-plaintext font-weight-bold min-width-3ch" readonly />
-    </div>
-</div>
-
-<!-- Replace the total row with this updated version -->
-<div class="row input-group-text font-weight-bold">
-    <div class="col-2 input-group-text font-weight-bold">
-        <label><strong>Total</strong></label>
-    </div>
-    <div class="col-2 input-group-text">
-        <label id="txtTotalMorning" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
-    </div>
-    <div class="col-2 input-group-text">
-        <label id="txtTotalEvening" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
-    </div>
-    <div class="col-3 input-group-text">
-        <label id="txtGrandTotal" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
-    </div>
-    <div class="col-3 input-group-text">
-        <label id="txtTotalAmount" class="form-control-plaintext font-weight-bold text-center mb-0">0.00</label>
-    </div>
-</div>
 
         <div class="row mt-3">
             <div class="col"><hr/></div>
@@ -418,11 +414,10 @@
             <div class="col font-weight-bold  text-right" id="txt200Total">0.0</div>
         </div>
         <div class="row">  <div class="col"> &nbsp;</div></div>
-        <div the="row">
+        <div class="row">
             <div class="col font-weight-bold text-right">100 X </right> </div>
-            <div class="col font-weight-bold d-flex flex-row" >
-                <input id="txt100num"  type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,100,'txt100Total')" />  </div>
-
+            <div class="col font-weight-bold d-flex flex-row">
+             <input id="txt100num" type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,100,'txt100Total')"/>  </div>
             <div class="col font-weight-bold  text-right" id="txt100Total">0.0</div>
         </div>
         <div class="row">  <div class="col"> &nbsp;</div></div>
