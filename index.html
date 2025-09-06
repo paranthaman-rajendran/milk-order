@@ -9,6 +9,7 @@
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         /* Set minimum width for input fields to accommodate at least four characters */
         .min-width-3ch {
@@ -22,8 +23,73 @@
 </head>
 <body>
     <script>
-         // Define milk prices lookup table
-         var milkPrice = new Map();
+        // Screenshot and sharing functionality
+        async function captureAndShare() {
+            try {
+                // Capture the screen
+                const canvas = await html2canvas(document.querySelector('.container-fluid'));
+                
+                // Convert canvas to blob
+                canvas.toBlob(async function(blob) {
+                    // Create file from blob
+                    const file = new File([blob], 'milk-order-screenshot.png', { type: 'image/png' });
+                    
+                    // Check if Web Share API is supported
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: 'Milk Order Details',
+                                text: 'Sharing milk order details'
+                            });
+                        } catch (error) {
+                            console.log('Error sharing:', error);
+                            // Fallback: open in new tab
+                            const imageUrl = canvas.toDataURL('image/png');
+                            window.open(imageUrl);
+                        }
+                    } else {
+                        // Fallback for browsers that don't support Web Share API
+                        const imageUrl = canvas.toDataURL('image/png');
+                        window.open(imageUrl);
+                    }
+                }, 'image/png');
+            } catch (error) {
+                console.error('Error capturing screenshot:', error);
+                alert('Failed to capture screenshot. Please try again.');
+            }
+        }
+
+        function showHelp() {
+            const helpText = `
+Help Guide:
+
+1. Fill Details:
+   - Enter Booth No and Agent Name
+   - Payment Date and Milk Delivery Date are auto-filled
+
+2. Enter Quantities:
+   - Morning (Mor): Enter morning delivery quantity
+   - Evening (Eve): Enter evening delivery quantity
+   - Amount (Amt): Automatically calculated
+
+3. Buttons:
+   - Clear All: Reset all fields
+   - Calculate Price: Recalculate all amounts
+   - Print & Share: Capture screen and share via apps
+   - Help: Show this help guide
+
+4. Amount Denomination:
+   - Enter the count of each denomination
+   - Total is calculated automatically
+
+Note: All calculations are automatic when you enter quantities.
+`;
+            alert(helpText);
+        }
+
+        // Define milk prices lookup table
+        var milkPrice = new Map();
          milkPrice.set("FCM1000", 60.0);  // Full Cream Milk 1000ml
          milkPrice.set("SM500", 44.0);    // Standard Milk 500ml
          milkPrice.set("TM500", 40.0);    // Toned Milk 500ml
@@ -117,8 +183,8 @@
                 "txtSM500QtyinLtr", "txtSM500Amount",
                 "txtSM200inLtr", "txtSM200Amount",
                 "txtTM500QtyinLtr", "txtTM500Amount",
-                "txtDelite500Morning", "txtDelite500Evening", "txtDelite500Total", "txtDelite500Amount",
-                "txtDelite200Morning", "txtDelite200Evening", "txtDelite200Total", "txtDelite200Amount"
+                "txtDelite500Morning", "txtDelite500Evening", "txtDelite500Amount",
+                "txtDelite200Morning", "txtDelite200Evening", "txtDelite200Amount"
             ];
 
             // Reset each field
@@ -132,7 +198,6 @@
             // Reset total labels
             document.getElementById('txtTotalMorning').textContent = '0';
             document.getElementById('txtTotalEvening').textContent = '0';
-            document.getElementById('txtGrandTotal').textContent = '0';
             document.getElementById('txtTotalAmount').textContent = '0.00';
         }
 
@@ -253,9 +318,6 @@
             const evening = parseFloat(document.getElementById(`txt${milkType}Evening`).value) || 0;
             const total = morning + evening;
             
-            // Update total quantity for this milk type
-            document.getElementById(`txt${milkType}Total`).value = total;
-            
             // Calculate and update amount based on price
             const price = milkPrice.get(milkType);
             const amount = total * price;
@@ -271,7 +333,6 @@
         function calculateColumnTotals() {
             let totalMorning = 0;
             let totalEvening = 0;
-            let grandTotal = 0;
             let totalAmount = 0;
 
             // Calculate totals for all milk types
@@ -279,20 +340,17 @@
                 // Get values from form fields
                 const morning = parseFloat(document.getElementById(`txt${milkType}Morning`).value) || 0;
                 const evening = parseFloat(document.getElementById(`txt${milkType}Evening`).value) || 0;
-                const total = parseFloat(document.getElementById(`txt${milkType}Total`).value) || 0;
                 const amount = parseFloat(document.getElementById(`txt${milkType}Amount`).value) || 0;
 
                 // Add to running totals
                 totalMorning += morning;
                 totalEvening += evening;
-                grandTotal += total;
                 totalAmount += amount;
             });
 
             // Update totals display in footer row
             document.getElementById('txtTotalMorning').textContent = totalMorning;
             document.getElementById('txtTotalEvening').textContent = totalEvening;
-            document.getElementById('txtGrandTotal').textContent = grandTotal;
             document.getElementById('txtTotalAmount').textContent = totalAmount.toFixed(2);
         }
 
@@ -306,15 +364,15 @@
             </div>
             <div class="col-6 col-md-3">
                 <label for="txtAgentName">Agent Name</label>
-                <input type="text" class="form-control" id="txtAgentName" value="R Rajendran" size="10" />
+                <input type="text" class="form-control" id="txtAgentName" value="R Rajendran" size="6" />
             </div>
             <div class="col-6 col-md-3">
                 <label for="txtPaymentDate">Payment Date</label>
-                <input type="text" class="form-control font-weight-bold" id="txtPaymentDate" size="8" />
+                <input type="text" class="form-control font-weight-bold" id="txtPaymentDate" size="5" />
             </div>
             <div class="col-6 col-md-3">
                 <label for="txtMilkRequiredDate">Milk Delivery Date</label>
-                <input type="text" class="form-control font-weight-bold" id="txtMilkRequiredDate" size="8" />
+                <input type="text" class="form-control font-weight-bold" id="txtMilkRequiredDate" size="5" />
             </div>
         </div>
 
@@ -329,7 +387,6 @@
                         <th>Type</th>
                         <th>Mor</th>
                         <th>Eve</th>
-                        <th>Total</th>
                         <th>Amt</th>
                     </tr>
                 </thead>
@@ -343,9 +400,6 @@
                         <td>
                             <input id="txtDelite500Evening" type="number" class="form-control font-weight-bold min-width-5ch" 
                                    onblur="calculateTotalQty('Delite500')" />
-                        </td>
-                        <td>
-                            <input id="txtDelite500Total" type="number" class="form-control font-weight-bold min-width-3ch" readonly />
                         </td>
                         <td>
                             <input id="txtDelite500Amount" type="text" value="0" class="form-control-plaintext font-weight-bold min-width-3ch" readonly />
@@ -362,9 +416,6 @@
                                    onblur="calculateTotalQty('Delite200')" />
                         </td>
                         <td>
-                            <input id="txtDelite200Total" type="number" class="form-control font-weight-bold min-width-3ch" readonly />
-                        </td>
-                        <td>
                             <input id="txtDelite200Amount" type="text" value="0" class="form-control-plaintext font-weight-bold min-width-3ch" readonly />
                         </td>
                     </tr>
@@ -373,16 +424,13 @@
                     <tr>
                         <td><strong>Total</strong></td>
                         <td>
-                            <label id="txtTotalMorning" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
+                            <label id="txtTotalMorning" class="form-control-plaintext font-weight-bold mb-0">0</label>
                         </td>
                         <td>
-                            <label id="txtTotalEvening" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
+                            <label id="txtTotalEvening" class="form-control-plaintext font-weight-bold mb-0">0</label>
                         </td>
                         <td>
-                            <label id="txtGrandTotal" class="form-control-plaintext font-weight-bold text-center mb-0">0</label>
-                        </td>
-                        <td>
-                            <label id="txtTotalAmount" class="form-control-plaintext font-weight-bold text-center mb-0">0.00</label>
+                            <label id="txtTotalAmount" class="form-control-plaintext font-weight-bold mb-0">0.00</label>
                         </td>
                     </tr>
                 </tfoot>
@@ -395,8 +443,11 @@
 
 
         <div class="row">  <div class="col"> <center>
-            <input type="button" class="btn btn-success" value="Clear All" onclick="ClearAll()">
-            <input type="button" class="btn btn-success" value="Calculate Price" onclick="doTotal() ; doAllPriceTotal();">
+            <input type="button" class="btn btn-success m-1" value="Clear All" onclick="ClearAll()">
+            <input type="button" class="btn btn-success m-1" value="Calculate Price" onclick="doTotal() ; doAllPriceTotal();">
+            <br/>
+            <input type="button" class="btn btn-primary m-1" value="Print & Share" onclick="captureAndShare()">
+            <input type="button" class="btn btn-info m-1" value="Help" onclick="showHelp()">
         </center></div></div>
         <div class="row">  <div class="col"> &nbsp;</div></div>
         <div class="row">  <div class="col"> &nbsp;</div></div>
