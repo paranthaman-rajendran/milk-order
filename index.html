@@ -1,547 +1,272 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Milk Order Page</title>
-    <link
-            rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-            crossorigin="anonymous"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Milk Order - Booth 2189</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        /* Set minimum width for input fields to accommodate at least four characters */
-        .min-width-3ch {
-            min-width: 7ch; /* Updated to fit 4 characters comfortably */
+        body { font-size: 1rem; }
+
+        .section-title {
+            background: #343a40;
+            color: #fff;
+            font-weight: 700;
+            padding: 0.35rem 0.75rem;
         }
 
-        .min-width-5ch {
-            min-width: 5ch; /* Updated to fit 4 characters comfortably */
+        input[type="number"] {
+            font-weight: 700;
+            font-size: 1rem;
+            text-align: right;
         }
+
+        .tfoot-total { background: #e9ecef; font-weight: 700; }
     </style>
 </head>
 <body>
-    <script>
-        // Screenshot and sharing functionality
-        async function captureAndShare() {
-            try {
-                // Capture the screen
-                const canvas = await html2canvas(document.querySelector('.container-fluid'));
-                
-                // Convert canvas to blob
-                canvas.toBlob(async function(blob) {
-                    // Create file from blob
-                    const file = new File([blob], 'milk-order-screenshot.png', { type: 'image/png' });
-                    
-                    // Check if Web Share API is supported
-                    if (navigator.share) {
-                        try {
-                            await navigator.share({
-                                files: [file],
-                                title: 'Milk Order Details',
-                                text: 'Sharing milk order details'
-                            });
-                        } catch (error) {
-                            console.log('Error sharing:', error);
-                            // Fallback: open in new tab
-                            const imageUrl = canvas.toDataURL('image/png');
-                            window.open(imageUrl);
-                        }
-                    } else {
-                        // Fallback for browsers that don't support Web Share API
-                        const imageUrl = canvas.toDataURL('image/png');
-                        window.open(imageUrl);
-                    }
-                }, 'image/png');
-            } catch (error) {
-                console.error('Error capturing screenshot:', error);
-                alert('Failed to capture screenshot. Please try again.');
-            }
-        }
+<div class="container-fluid px-2 pb-3" id="pageContent">
 
-        function showHelp() {
-            const helpText = `
-Help Guide:
+    <!-- ── Capture region: everything above the buttons ─────────────────── -->
+    <div id="captureSection">
 
-1. Fill Details:
-   - Enter Booth No and Agent Name
-   - Payment Date and Milk Delivery Date are auto-filled
+    <!-- ── Agent Details ──────────────────────────────────────────────────── -->
+    <table class="table table-bordered mb-0" style="font-size:1.15rem;">
+        <tbody>
+            <tr>
+                <td class="font-weight-bold" style="background:#f8f9fa; width:50%;">Booth No : 2189</td>
+                <td class="font-weight-bold" style="background:#f8f9fa;">Agent Name: R Rajendran</td>
+            </tr>
+            <tr>
+                <td class="font-weight-bold" style="background:#f8f9fa;">Payment Date:
+                    <span id="txtPaymentDate"></span>
+                </td>
+                <td class="font-weight-bold" style="background:#f8f9fa;">Delivery Date:
+                    <span id="txtMilkRequiredDate"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-2. Enter Quantities:
-   - Morning (Mor): Enter morning delivery quantity
-   - Evening (Eve): Enter evening delivery quantity
-   - Amount (Amt): Automatically calculated
+    <hr class="mt-2 mb-2">
 
-3. Buttons:
-   - Clear All: Reset all fields
-   - Calculate Price: Recalculate all amounts
-   - Print & Share: Capture screen and share via apps
-   - Help: Show this help guide
+    <!-- ── Milk Order ─────────────────────────────────────────────────────── -->
+    <table class="table table-bordered text-center mb-0">
+        <thead class="thead-dark">
+            <tr>
+                <th>Type</th>
+                <th>Morning</th>
+                <th>Evening</th>
+                <th>Total Ltrs</th>
+                <th>Amount (&#8377;)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="align-middle font-weight-bold">SM 500</td>
+                <td><input id="txtDelite500Morning" type="number" min="0" class="form-control" oninput="calcRow('Delite500')"></td>
+                <td><input id="txtDelite500Evening" type="number" min="0" class="form-control" oninput="calcRow('Delite500')"></td>
+                <td class="align-middle font-weight-bold" id="txtDelite500Total">0</td>
+                <td class="align-middle font-weight-bold" id="txtDelite500Amount">0.00</td>
+            </tr>
+            <tr>
+                <td class="align-middle font-weight-bold">SM 200</td>
+                <td><input id="txtDelite200Morning" type="number" min="0" class="form-control" oninput="calcRow('Delite200')"></td>
+                <td><input id="txtDelite200Evening" type="number" min="0" class="form-control" oninput="calcRow('Delite200')"></td>
+                <td class="align-middle font-weight-bold" id="txtDelite200Total">0</td>
+                <td class="align-middle font-weight-bold" id="txtDelite200Amount">0.00</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="tfoot-total">
+                <td>Total</td>
+                <td id="txtTotalMorning">0</td>
+                <td id="txtTotalEvening">0</td>
+                <td id="txtTotalLtrs">0</td>
+                <td id="txtTotalAmount">0.00</td>
+            </tr>
+        </tfoot>
+    </table>
 
-4. Amount Denomination:
-   - Enter the count of each denomination
-   - Total is calculated automatically
+    </div><!-- end #captureSection -->
 
-Note: All calculations are automatic when you enter quantities.
-`;
-            alert(helpText);
-        }
+    <hr class="mt-2 mb-3">
 
-        // Define milk prices lookup table
-        var milkPrice = new Map();
-         milkPrice.set("FCM1000", 60.0);  // Full Cream Milk 1000ml
-         milkPrice.set("SM500", 44.0);    // Standard Milk 500ml
-         milkPrice.set("TM500", 40.0);    // Toned Milk 500ml
-         milkPrice.set("SM200", 50.0);    // Standard Milk 200ml
-         milkPrice.set("Delite500", 44.0); // Delite Milk 500ml
-         milkPrice.set("Delite200", 50.0); // Delite Milk 200ml
-
-         //alert('milk price of FCM100 is '.concat( milkPrice.get("FCM1000")) );
-
-        function calculatePrice(qty,milkType){
-            console.log('Total'+qty);
-            var qtyFloat =parseFloat(qty);
-            var elementId="txt".concat(milkType).concat("Amount");
-            var price= document.getElementById(elementId);
-            var strPrice ="" +(qtyFloat * milkPrice.get(milkType));
-
-            if(strPrice !='NaN'){
-                price.value = strPrice;
-                doTotal();
-            }else
-            {
-                price.value = 0.0;
-            }
-
-        }
-
-         function getPrice(qty,milkType){
-
-            var qtyFloat =parseFloat(qty);
-            var elementId="txt".concat(milkType).concat("Amount");
-            var price= document.getElementById(elementId);
-            var strPrice ="" +(qtyFloat * milkPrice.get(milkType));
-
-            if(strPrice !='NaN'){
-                price.value = strPrice;
-
-            }else
-            {
-                price.value = 0.0;
-            }
-
-        }
-
-        function checkDecimal(inputtxt)
-        {
-                var decimal=  /^[-+]?[0-9]+\.[0-9]+$/;
-                if(inputtxt.match(decimal))
-                {
-                    alert('Correct, try another...')
-                    return true;
-                }
-                else
-                {
-                    alert('Wrong...!')
-                    return false;
-                }
-        }
-
-
-        function validateAndCalculate(qtyId,amtId,priceKey){
-
-               try {
-                    var qty  = document.getElementById(qtyId);
-                    if(! checkDecimal(qty.value)){
-                          alert("Invalid liter entered for ".concat(priceKey));
-                          qty.focus();
-                          return false;
-                     }
-
-
-                    var amt  = document.getElementById(amtId);
-                    var price= document.getElementById(elementId);
-
-                    price.value = parseFloat(qty.value) * milkPrice.get(priceKey);
-
-                    doTotal();
-                }catch(e)
-                {
-                    alert('Please enter valid ')
-                    return false ;
-                }
-        }
-
-        /**
-         * Clears all input fields and resets totals
-         */
-        function ClearAll() {
-            // Clear milk quantity and amount fields
-            const fieldsToReset = [
-                "txtFCM1000QtyinLtr", "txtFCM1000Amount",
-                "txtSM500QtyinLtr", "txtSM500Amount",
-                "txtSM200inLtr", "txtSM200Amount",
-                "txtTM500QtyinLtr", "txtTM500Amount",
-                "txtDelite500Morning", "txtDelite500Evening", "txtDelite500Amount",
-                "txtDelite200Morning", "txtDelite200Evening", "txtDelite200Amount"
-            ];
-
-            // Reset each field
-            fieldsToReset.forEach(fieldId => {
-                const element = document.getElementById(fieldId);
-                if (element) {
-                    element.value = "";
-                }
-            });
-
-            // Reset total labels
-            document.getElementById('txtTotalMorning').textContent = '0';
-            document.getElementById('txtTotalEvening').textContent = '0';
-            document.getElementById('txtTotalAmount').textContent = '0.00';
-        }
-
-        function updateAmount(moneyValue, moneyQty, target){
-            var moneyValue =parseFloat(moneyValue);
-            var price= document.getElementById(target);
-            var totColTotal ="" +(moneyValue * moneyQty );
-            if(totColTotal !='NaN'){
-                price.innerHTML  = totColTotal ;
-                doMoneyTotal();
-            }
-        }
-        function doMoneyTotal(){
-
-            var txt500Total = document.getElementById("txt500Total").innerHTML;
-            var txt200Total = document.getElementById("txt200Total").innerHTML;
-            var txt100Total = document.getElementById("txt100Total").innerHTML;
-            var txt50Total  = document.getElementById("txt50Total").innerHTML;
-            var txt20Total  = document.getElementById("txt20Total").innerHTML;
-            var txt10Total  = document.getElementById("txt10Total").innerHTML;
-            var txtCoinsTotal  = document.getElementById("txtCoinsTotal").value;
-
-            var total500 =0.0;
-            var total200 =0.0;
-            var total100 =0.0;
-            var total50  =0.0;
-            var total20  =0.0;
-            var total10  =0.0;
-            var coinsTotal=0.0;
-
-            if(txt500Total.trim() != "")  total500  = parseFloat(txt500Total.trim());
-            if(txt200Total.trim() != "")  total200  = parseFloat(txt200Total.trim());
-            if(txt100Total.trim() != "")  total100  = parseFloat(txt100Total.trim());
-            if(txt50Total.trim() != "")  total50   = parseFloat(txt50Total.trim());
-            if(txt20Total.trim() != "")  total20   = parseFloat(txt20Total.trim());
-            if(txt10Total.trim() != "")  total10   = parseFloat(txt10Total.trim());
-            if(txtCoinsTotal.trim() != "")  coinsTotal =parseFloat(txtCoinsTotal.trim());
-
-            var moneyTotal =total500 + total200 + total100 + total50  + total20 + total10 +coinsTotal ;
-
-            document.getElementById("txtTotalMoney").value =moneyTotal ;
-
-
-            return true;
-
-        }
-        function doAllPriceTotal(){
-            getPrice(document.getElementById("txtFCM1000QtyinLtr").value,'FCM1000');
-            getPrice(document.getElementById("txtSM500QtyinLtr").value,'SM500');
-            getPrice(document.getElementById("txtSM200inLtr").value,'SM200');
-            getPrice(document.getElementById("txtTM500QtyinLtr").value,'TM500');
-            
-        }
-        function doTotal(){
-                doAllPriceTotal();
-                var txtSM500QtyinLtr    =0.0;
-                var txtSM500Amount      =0.0;
-                var txtFCM1000QtyinLtr  =0.0;
-                var txtFCM1000Amount    =0.0;
-                var txtSM200inLtr       =0.0;
-                var txtSM200Amount      =0.0;
-
-                var txtTM500inLtr       =0.0;
-                var txtTM500Amount      =0.0;
-
-                var txtTotalQtyinLtr    =0.0;
-                var txtTotalAmount      =0.0;
-
-                    if(document.getElementById("txtFCM1000QtyinLtr").value.trim() === "") {
-                        document.getElementById("txtFCM1000Amount").value ="0";
-                        txtFCM1000QtyinLtr=0;
-                       }else{
-                             txtFCM1000QtyinLtr    = parseFloat(document.getElementById("txtFCM1000QtyinLtr").value);
-                             txtFCM1000Amount    = parseFloat(document.getElementById("txtFCM1000Amount").value);
-                         }
-                     if(document.getElementById("txtSM500QtyinLtr").value.trim() === "") {
-                            document.getElementById("txtSM500Amount").value ="0";
-                            txtSM500QtyinLtr=0;
-                        }else {
-                             txtSM500QtyinLtr    = parseFloat(document.getElementById("txtSM500QtyinLtr").value);
-                            txtSM500Amount    = parseFloat(document.getElementById("txtSM500Amount").value);
-                        }
-
-
-                      if(document.getElementById("txtTM500QtyinLtr").value.trim() === "") {
-                        txtSTM500inLtr =0;
-                        document.getElementById("txtTM500Amount").value ="0";
-                       }else{
-                            txtTM500inLtr    = parseFloat(document.getElementById("txtTM500QtyinLtr").value);
-                            txtTM500Amount    = parseFloat(document.getElementById("txtTM500Amount").value);
-                       }
-
-                       if(document.getElementById("txtSM200inLtr").value.trim() === "") {
-                        txtSM200inLtr =0;
-                        document.getElementById("txtSM200Amount").value ="0";
-                       }else{
-                            txtSM200inLtr    = parseFloat(document.getElementById("txtSM200inLtr").value);
-                            txtSM200Amount    = parseFloat(document.getElementById("txtSM200Amount").value);
-                       }
-
-
-
-                 txtTotalQtyinLtr    = txtSM500QtyinLtr + txtFCM1000QtyinLtr + txtSM200inLtr+txtTM500inLtr;
-                 txtTotalAmount      = txtSM500Amount + txtFCM1000Amount + txtSM200Amount + txtTM500Amount;
-
-                document.getElementById("txtTotalQtyinLtr").value=txtTotalQtyinLtr;
-                document.getElementById("txtTotalAmount").value=txtTotalAmount;
-
-        }
-
-        /**
-         * Calculates total quantity and amount for a specific milk type
-         * @param {string} milkType - Type of milk (e.g., 'Delite500', 'Delite200')
-         */
-        function calculateTotalQty(milkType) {
-            // Get morning and evening quantities, default to 0 if empty
-            const morning = parseFloat(document.getElementById(`txt${milkType}Morning`).value) || 0;
-            const evening = parseFloat(document.getElementById(`txt${milkType}Evening`).value) || 0;
-            const total = morning + evening;
-            
-            // Calculate and update amount based on price
-            const price = milkPrice.get(milkType);
-            const amount = total * price;
-            document.getElementById(`txt${milkType}Amount`).value = amount.toFixed(2);
-
-            // Update column totals after calculation
-            calculateColumnTotals();
-        }
-
-        /**
-         * Calculates totals for all columns (Morning, Evening, Total, Amount)
-         */
-        function calculateColumnTotals() {
-            let totalMorning = 0;
-            let totalEvening = 0;
-            let totalAmount = 0;
-
-            // Calculate totals for all milk types
-            ['Delite500', 'Delite200'].forEach(milkType => {
-                // Get values from form fields
-                const morning = parseFloat(document.getElementById(`txt${milkType}Morning`).value) || 0;
-                const evening = parseFloat(document.getElementById(`txt${milkType}Evening`).value) || 0;
-                const amount = parseFloat(document.getElementById(`txt${milkType}Amount`).value) || 0;
-
-                // Add to running totals
-                totalMorning += morning;
-                totalEvening += evening;
-                totalAmount += amount;
-            });
-
-            // Update totals display in footer row
-            document.getElementById('txtTotalMorning').textContent = totalMorning;
-            document.getElementById('txtTotalEvening').textContent = totalEvening;
-            document.getElementById('txtTotalAmount').textContent = totalAmount.toFixed(2);
-        }
-
-    </script>
-    <div class="container-fluid"  >
-      
-        <div class="row font-weight-bold">
-            <div class="col-6 col-md-3">
-                <label for="txtBoothNo">Booth No</label>
-                <input type="text" class="form-control" id="txtBoothNo" value="2189" size="4" />
-            </div>
-            <div class="col-6 col-md-3">
-                <label for="txtAgentName">Agent Name</label>
-                <input type="text" class="form-control" id="txtAgentName" value="R Rajendran" size="6" />
-            </div>
-            <div class="col-6 col-md-3">
-                <label for="txtPaymentDate">Payment Date</label>
-                <input type="text" class="form-control font-weight-bold" id="txtPaymentDate" size="5" />
-            </div>
-            <div class="col-6 col-md-3">
-                <label for="txtMilkRequiredDate">Milk Delivery Date</label>
-                <input type="text" class="form-control font-weight-bold" id="txtMilkRequiredDate" size="5" />
-            </div>
-        </div>
-
-        <div class="row mt-3">
-            <div class="col"><hr/></div>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-bordered text-center">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Type</th>
-                        <th>Mor</th>
-                        <th>Eve</th>
-                        <th>Amt</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>SM 500</strong></td>
-                        <td>
-                            <input id="txtDelite500Morning" type="number" class="form-control font-weight-bold min-width-5ch" 
-                                   onblur="calculateTotalQty('Delite500')" />
-                        </td>
-                        <td>
-                            <input id="txtDelite500Evening" type="number" class="form-control font-weight-bold min-width-5ch" 
-                                   onblur="calculateTotalQty('Delite500')" />
-                        </td>
-                        <td>
-                            <input id="txtDelite500Amount" type="text" value="0" class="form-control-plaintext font-weight-bold min-width-3ch" readonly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>SM 200</strong></td>
-                        <td>
-                            <input id="txtDelite200Morning" type="number" class="form-control font-weight-bold min-width-5ch" 
-                                   onblur="calculateTotalQty('Delite200')" />
-                        </td>
-                        <td>
-                            <input id="txtDelite200Evening" type="number" class="form-control font-weight-bold min-width-5ch" 
-                                   onblur="calculateTotalQty('Delite200')" />
-                        </td>
-                        <td>
-                            <input id="txtDelite200Amount" type="text" value="0" class="form-control-plaintext font-weight-bold min-width-3ch" readonly />
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td><strong>Total</strong></td>
-                        <td>
-                            <label id="txtTotalMorning" class="form-control-plaintext font-weight-bold mb-0">0</label>
-                        </td>
-                        <td>
-                            <label id="txtTotalEvening" class="form-control-plaintext font-weight-bold mb-0">0</label>
-                        </td>
-                        <td>
-                            <label id="txtTotalAmount" class="form-control-plaintext font-weight-bold mb-0">0.00</label>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <div class="row mt-3">
-            <div class="col"><hr/></div>
-        </div>
-
-
-        <div class="row">  <div class="col"> <center>
-            <input type="button" class="btn btn-success m-1" value="Clear All" onclick="ClearAll()">
-            <input type="button" class="btn btn-success m-1" value="Calculate Price" onclick="doTotal() ; doAllPriceTotal();">
-            <br/>
-            <input type="button" class="btn btn-primary m-1" value="Print & Share" onclick="captureAndShare()">
-            <input type="button" class="btn btn-info m-1" value="Help" onclick="showHelp()">
-        </center></div></div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-
-
-        <div class="row input-group-text font-weight-bold">  <div class="col">Amount Denomination &nbsp;</div></div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-        <div class="row">
-            <div class="col font-weight-bold text-right">500 X </right> </div>
-            <div class="col font-weight-bold  d-flex flex-row ">
-                <input id="txt500num" type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,500,'txt500Total')" />  </div>
-            <div class="col font-weight-bold  text-right" id="txt500Total">0.0</div>
-        </div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-        <div class="row">
-            <div class="col font-weight-bold text-right">200 X </right> </div>
-            <div class="col font-weight-bold d-flex flex-row">
-             <input id="txt200num" type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,200,'txt200Total')"/>  </div>
-            <div class="col font-weight-bold  text-right" id="txt200Total">0.0</div>
-        </div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-        <div class="row">
-            <div class="col font-weight-bold text-right">100 X </right> </div>
-            <div class="col font-weight-bold d-flex flex-row">
-             <input id="txt100num" type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,100,'txt100Total')"/>  </div>
-            <div class="col font-weight-bold  text-right" id="txt100Total">0.0</div>
-        </div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-        <div class="row">
-            <div class="col font-weight-bold text-right">50 X </right> </div>
-            <div class="col font-weight-bold d-flex flex-row">
-                <input id="txt50num"  type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,50,'txt50Total')"/>  </div>
-            <div class="col font-weight-bold  text-right" id="txt50Total">0.0</div>
-        </div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-        <div class="row">
-            <div class="col font-weight-bold text-right">20 X </right> </div>
-            <div class="col font-weight-bold d-flex  flex-row">
-                <input id="txt20num"  type="number" class="form-control font-weight-bold text-right min-width-3ch"  onblur="updateAmount(this.value,20,'txt20Total')"/>   </div>
-
-            <div class="col font-weight-bold  text-right" id="txt20Total">0.0</div>
-        </div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-        <div class="row">
-            <div class="col font-weight-bold text-right">10 X </right> </div>
-            <div class="col font-weight-bold d-flex  flex-row align-middle ">
-                <input id="txt10num"  type="number" class="form-control font-weight-bold text-right min-width-3ch" onblur="updateAmount(this.value,10,'txt10Total')"/>  </div>
-                <div class="col font-weight-bold text-right" id="txt10Total"> 0.0</div>
-        </div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-        <div class="row">
-            <div class="col font-weight-bold text-right">COINS  </right> </div>
-            <div class="col font-weight-bold text-right ">
-                <input id="txtCoinsTotal" type="number" value="0" onfocus="this.value='';"
-                       onblur="updateAmount(this.value,1,'txtCoinTotal')"
-                       class="form-control font-weight-bold text-right min-width-3ch"  /> </div>
-            <div class="col font-weight-bold text-right" id="txtCoinTotal"> &nbsp;</div>
-        </div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-
-        <div class="row">
-            <div class="col font-weight-bold ">&nbsp; </right> </div>
-            <div class="col font-weight-bold text-right"> Total Amount  </div>
-            <div class="col font-weight-bold text-right"> <input id="txtTotalMoney"  class="form-control-plaintext font-weight-bold text-right"  /> </div>
-        </div>
-        <div class="row">  <div class="col"> &nbsp;</div></div>
-         <div class="row font-weight-bold">
-            <div class="col ">
-               <center>PREPAYMENT - AGENT COPY <BR/>
-                VELLORE - THIRUVANNAMALAI DISTRICT MILK CO-OPERATIVE SOCIATY <BR/>
-                VELLORE-9</center>
-            </div>
-        </div>
+    <!-- ── Action Buttons ─────────────────────────────────────────────────── -->
+    <div class="text-center mb-3">
+        <button class="btn btn-success btn-lg m-1" onclick="clearAll()">Clear All</button>
+        <button class="btn btn-primary btn-lg m-1" onclick="captureAndShare()">Print &amp; Share</button>
+        <button class="btn btn-secondary btn-lg m-1" onclick="showHelp()">Help</button>
     </div>
-    <script>
-        var today = new Date();
-        var tomorrow = new Date();
-        tomorrow.setDate(new Date().getDate()+1);
 
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        var yyyy = today.getFullYear();
+    <hr class="mb-2">
 
-        today = dd + '/' + mm + '/' + yyyy;
+    <!-- ── Amount Denomination ────────────────────────────────────────────── -->
+    <div class="section-title mb-0">Amount Denomination</div>
+    <table class="table table-bordered table-sm mb-0">
+        <thead class="thead-light">
+            <tr>
+                <th class="text-center">Note / Coin</th>
+                <th class="text-center">Count</th>
+                <th class="text-center">Total (&#8377;)</th>
+            </tr>
+        </thead>
+        <tbody id="denomBody">
+            <!-- rows built from DENOMS config in script below -->
+        </tbody>
+        <tfoot>
+            <tr class="tfoot-total">
+                <td colspan="2" class="text-right">Grand Total (&#8377;)</td>
+                <td class="text-right font-weight-bold" id="txtTotalMoney">0</td>
+            </tr>
+        </tfoot>
+    </table>
 
-         var tomorrowDD = String(tomorrow.getDate()).padStart(2, '0');
-         var tomorrowMonth = String(tomorrow.getMonth() + 1).padStart(2, '0'); //January is 0!
-         var tomorrowYear = tomorrow.getFullYear();
-            strTomorrow = tomorrowDD + '/' + tomorrowMonth + '/' + tomorrowYear;
-        document.getElementById("txtPaymentDate").value = today;
-        document.getElementById("txtMilkRequiredDate").value = strTomorrow;
+    <hr class="mt-3 mb-2">
 
-        //document.write(today);
+    <!-- ── Footer ─────────────────────────────────────────────────────────── -->
+    <p class="text-center font-weight-bold mb-0">
+        PREPAYMENT &#8211; AGENT COPY<br>
+        VELLORE &#8211; THIRUVANNAMALAI DISTRICT MILK CO-OPERATIVE SOCIETY<br>
+        VELLORE-9
+    </p>
 
-    </script>
+</div>
+
+<script>
+    // ── Config: change prices or denominations here only ────────────────────
+
+    const MILK_PRICES = {
+        Delite500: 44.0,   // SM 500 ml
+        Delite200: 50.0,   // SM 200 ml
+    };
+
+    const MILK_TYPES = ['Delite500', 'Delite200'];
+
+    const DENOMS = [
+        { label: '&#8377; 500', inputId: 'txt500num',     totalId: 'txt500Total',  value: 500 },
+        { label: '&#8377; 200', inputId: 'txt200num',     totalId: 'txt200Total',  value: 200 },
+        { label: '&#8377; 100', inputId: 'txt100num',     totalId: 'txt100Total',  value: 100 },
+        { label: '&#8377; 50',  inputId: 'txt50num',      totalId: 'txt50Total',   value: 50  },
+        { label: '&#8377; 20',  inputId: 'txt20num',      totalId: 'txt20Total',   value: 20  },
+        { label: '&#8377; 10',  inputId: 'txt10num',      totalId: 'txt10Total',   value: 10  },
+        { label: 'Coins',       inputId: 'txtCoinsTotal', totalId: 'txtCoinTotal', value: 1   },
+    ];
+
+    // ── Build denomination rows from config ──────────────────────────────────
+
+    DENOMS.forEach(d => {
+        document.getElementById('denomBody').insertAdjacentHTML('beforeend', `
+            <tr>
+                <td class="font-weight-bold text-right align-middle">${d.label}</td>
+                <td><input id="${d.inputId}" type="number" min="0" class="form-control"
+                           oninput="calcDenom('${d.inputId}','${d.totalId}',${d.value})"></td>
+                <td class="font-weight-bold text-right align-middle" id="${d.totalId}">0</td>
+            </tr>`);
+    });
+
+    // ── Milk order ───────────────────────────────────────────────────────────
+
+    function calcRow(milkType) {
+        const morning = parseFloat(document.getElementById(`txt${milkType}Morning`).value) || 0;
+        const evening = parseFloat(document.getElementById(`txt${milkType}Evening`).value) || 0;
+        const total   = morning + evening;
+        const amount  = total * MILK_PRICES[milkType];
+        document.getElementById(`txt${milkType}Total`).textContent  = total;
+        document.getElementById(`txt${milkType}Amount`).textContent = amount.toFixed(2);
+        calcOrderTotals();
+    }
+
+    function calcOrderTotals() {
+        let totalMorning = 0, totalEvening = 0, totalLtrs = 0, totalAmount = 0;
+        MILK_TYPES.forEach(t => {
+            totalMorning += parseFloat(document.getElementById(`txt${t}Morning`).value) || 0;
+            totalEvening += parseFloat(document.getElementById(`txt${t}Evening`).value) || 0;
+            totalLtrs    += parseFloat(document.getElementById(`txt${t}Total`).textContent) || 0;
+            totalAmount  += parseFloat(document.getElementById(`txt${t}Amount`).textContent) || 0;
+        });
+        document.getElementById('txtTotalMorning').textContent = totalMorning;
+        document.getElementById('txtTotalEvening').textContent = totalEvening;
+        document.getElementById('txtTotalLtrs').textContent    = totalLtrs;
+        document.getElementById('txtTotalAmount').textContent  = totalAmount.toFixed(2);
+    }
+
+    // ── Denomination ─────────────────────────────────────────────────────────
+
+    function calcDenom(inputId, totalId, value) {
+        const count = parseFloat(document.getElementById(inputId).value) || 0;
+        document.getElementById(totalId).textContent = (count * value).toFixed(0);
+        calcMoneyTotal();
+    }
+
+    function calcMoneyTotal() {
+        const total = DENOMS.reduce((sum, d) => {
+            return sum + (parseFloat(document.getElementById(d.totalId).textContent) || 0);
+        }, 0);
+        document.getElementById('txtTotalMoney').textContent = total;
+    }
+
+    // ── Clear ────────────────────────────────────────────────────────────────
+
+    function clearAll() {
+        MILK_TYPES.forEach(t => {
+            document.getElementById(`txt${t}Morning`).value = '';
+            document.getElementById(`txt${t}Evening`).value = '';
+            document.getElementById(`txt${t}Total`).textContent  = '0';
+            document.getElementById(`txt${t}Amount`).textContent = '0.00';
+        });
+        document.getElementById('txtTotalMorning').textContent = '0';
+        document.getElementById('txtTotalEvening').textContent = '0';
+        document.getElementById('txtTotalLtrs').textContent    = '0';
+        document.getElementById('txtTotalAmount').textContent  = '0.00';
+    }
+
+    // ── Dates ────────────────────────────────────────────────────────────────
+
+    function formatDate(d) {
+        return String(d.getDate()).padStart(2, '0') + '/' +
+               String(d.getMonth() + 1).padStart(2, '0') + '/' +
+               d.getFullYear();
+    }
+
+    const today    = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    document.getElementById('txtPaymentDate').textContent      = formatDate(today);
+    document.getElementById('txtMilkRequiredDate').textContent = formatDate(tomorrow);
+
+    // ── Print & Share ────────────────────────────────────────────────────────
+
+    async function captureAndShare() {
+        try {
+            const canvas = await html2canvas(document.getElementById('captureSection'));
+            canvas.toBlob(async blob => {
+                const file = new File([blob], 'milk-order.png', { type: 'image/png' });
+                if (navigator.share) {
+                    try { await navigator.share({ files: [file], title: 'Milk Order' }); return; }
+                    catch (_) { /* fall through to open */ }
+                }
+                window.open(canvas.toDataURL('image/png'));
+            }, 'image/png');
+        } catch (_) {
+            alert('Failed to capture screenshot. Please try again.');
+        }
+    }
+
+    // ── Help ─────────────────────────────────────────────────────────────────
+
+    function showHelp() {
+        alert(`Milk Order Help
+
+1. Quantities  — Enter morning and evening counts; amount calculates automatically.
+2. Denomination — Enter note/coin counts to verify collected cash.
+3. Print & Share — Screenshots the form and shares via your apps.
+4. Clear All    — Resets all milk order quantities.`);
+    }
+</script>
 </body>
 </html>
